@@ -10,8 +10,8 @@
       - curl
       - dbus
     state: latest
-    update_cache: yes 
-    
+    update_cache: yes
+
 - name: Disable Modem Manager to prevent issues when using serial devices
   service:
     name: ModemManager
@@ -25,22 +25,22 @@
   notify:
     - restart docker
 
-- name: Fix kernel dmesg restriction 
+- name: Fix kernel dmesg restriction
   sysctl:
-    name: kernel.dmesg_restrict 
+    name: kernel.dmesg_restrict
     value: '0'
     sysctl_set: yes
     state: present
     reload: yes
 
-- name: Create config for NetworkManager   
+- name: Create config for NetworkManager
   copy:
-    src: "{{ networkmanager_file['source'] }}" 
-    dest: "{{ networkmanager_file['target'] }}" 
+    src: "{{ networkmanager_file['source'] }}"
+    dest: "{{ networkmanager_file['target'] }}"
   loop:
     - source: NetworkManager.conf
-      target: /etc/NetworkManager/NetworkManager.conf   
-    - source: system-connection-default 
+      target: /etc/NetworkManager/NetworkManager.conf
+    - source: system-connection-default
       target: /etc/NetworkManager/system-connections/default
   loop_control:
     loop_var: networkmanager_file
@@ -54,3 +54,32 @@
     dest: /etc/network/interfaces
   notify:
     - restart networkmanager
+
+- name: Init folders
+  file:
+    path: "{{ data_share }}"
+    state: directory
+
+- name: Write config
+  template:
+    src: hassio.j2
+    dest: "{{ config }}"
+    mode: '0644'
+
+- name: Ensure all changed service are restarted
+  meta: flush_handlers
+
+- name: Write config
+  template:
+    src: hassio.j2
+    dest: "{{ config }}"
+
+- name: Read version infos from web
+  uri:
+    body_format: json
+    url: https://version.home-assistant.io/stable.json
+  register: hassio_stable_out
+
+- name: Set hassio_version fact
+  set_fact:
+    hassio_version: "{{ hassio_stable_out['json']['supervisor'] }}"
