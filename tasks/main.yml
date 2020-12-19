@@ -45,7 +45,12 @@
   loop_control:
     loop_var: networkmanager_file
     label: "{{ networkmanager_file['source']"
+  notify:
+    - restart networkmanager
 
-  
-  
-    
+- name: Overwrite network interfaces file
+  copy:
+    src: interfaces
+    dest: /etc/network/interfaces
+  notify:
+    - restart networkmanager
