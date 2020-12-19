@@ -1,0 +1,51 @@
+---
+- name: Install OS package prereqs
+  apt:
+    name:
+      - systemd
+      - network-manager
+      - apparmor
+      - docker
+      - jq
+      - curl
+      - dbus
+    state: latest
+    update_cache: yes 
+    
+- name: Disable Modem Manager to prevent issues when using serial devices
+  service:
+    name: ModemManager
+    enabled: no
+    state: stopped
+
+- name: Set up docker config file
+  copy:
+    src: docker_daemon.json
+    dest: /etc/docker/daemon.json
+  notify:
+    - restart docker
+
+- name: Fix kernel dmesg restriction 
+  sysctl:
+    name: kernel.dmesg_restrict 
+    value: '0'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Create config for NetworkManager   
+  copy:
+    src: "{{ networkmanager_file['source'] }}" 
+    dest: "{{ networkmanager_file['target'] }}" 
+  loop:
+    - source: NetworkManager.conf
+      target: /etc/NetworkManager/NetworkManager.conf   
+    - source: system-connection-default 
+      target: /etc/NetworkManager/system-connections/default
+  loop_control:
+    loop_var: networkmanager_file
+    label: "{{ networkmanager_file['source']"
+
+  
+  
+    
