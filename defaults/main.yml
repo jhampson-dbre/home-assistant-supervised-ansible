@@ -5,4 +5,6 @@ data_share: "{{ prefix }}/share/hassio"
 config: "{{ sysconfdir }}/hassio.json"
 machine: raspberrypi4
 docker_repo: homeassistant
-hassio_docker: "{{ DOCKER_REPO }}/armv7-hassio-supervisor"
+hassio_docker: "{{ docker_repo }}/armv7-hassio-supervisor"
+binary_docker: /usr/bin/docker
+service_docker: "docker.service"

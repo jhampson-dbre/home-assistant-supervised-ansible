@@ -97,3 +97,19 @@
     # As 'latest' usually already is present, we need to enable overwriting of existing tags
     force_tag: yes
     source: local
+
+- name: Install supervisor startup script
+  template:
+    src: hassio-supervisor.j2
+    dest: "{{ prefix }}/sbin/hassio-supervisor"
+    mode: a+x
+
+- name: Install supervisor service file
+  template:
+    src: hassio-supervisor.service.j2
+    dest: "{{ sysconfdir }}/systemd/system/hassio-supervisor.service"
+
+- name: Enable supervisor service
+  service:
+    name: hassio-supervisor
+    enabled: yes
