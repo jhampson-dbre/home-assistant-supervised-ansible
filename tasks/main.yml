@@ -145,3 +145,15 @@
   service:
     name: hassio-supervisor 
     start: started
+
+- name: Install the 'ha' cli 
+  copy:
+    src: ha 
+    dest: "{{ prefix }}/bin/ha" 
+    mode: a+x
+
+- name: Home Assistant supervised is now installed
+  debug:
+    msg:  
+      - "First setup will take some time, when it's ready you can reach it here:"
+      - "http://{{ ansible_default_ipv4['address'] }}:8123"
