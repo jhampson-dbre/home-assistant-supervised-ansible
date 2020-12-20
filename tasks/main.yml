@@ -83,3 +83,17 @@
 - name: Set hassio_version fact
   set_fact:
     hassio_version: "{{ hassio_stable_out['json']['supervisor'] }}"
+
+- name: Install supervisor Docker container
+  docker_image:
+    name: "{{ hassio_docker }}:{{ hassio_version }}"
+    source: pull
+    state: present
+
+- name: Add tag latest to supervisor image
+  docker_image:
+    name: "{{ hassio_docker }}:{{ hassio_version }}"
+    repository: "{{ hassio_docker }}:latest"
+    # As 'latest' usually already is present, we need to enable overwriting of existing tags
+    force_tag: yes
+    source: local
