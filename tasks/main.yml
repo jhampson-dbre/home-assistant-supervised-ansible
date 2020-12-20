@@ -113,3 +113,35 @@
   service:
     name: hassio-supervisor
     enabled: yes
+    
+- name: Create AppArmor directory
+  file:
+    path: "{{ data_share }}/apparmor"  
+    state: directory
+  
+- name: Install AppArmor startup script
+  src: hassio-apparmor.service.j2
+  dest: "{{ prefix }}/sbin/hassio-apparmor"
+  mode: a+x
+
+- name: Install AppArmor service file
+  template:
+    src: hassio-apparmor.service.j2
+    dest: "{{ sysconfdir }}/systemd/system/hassio-apparmor.service"
+  
+- name: Download AppArmor profile 
+  get_url:
+    url: https://version.home-assistant.io/apparmor.txt
+    dest: "{{ data_share }}/apparmor/hassio-supervisor"
+
+- name: Enable and start AppArmor service 
+  service:
+    name: hassio-apparmor 
+    enabled: yes
+    start: started
+
+# AppArmor service must be started before Home Assistant service
+- name: Start Home Assistant Supervised
+  service:
+    name: hassio-supervisor 
+    start: started
