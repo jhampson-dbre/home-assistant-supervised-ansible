@@ -1,10 +1,11 @@
 ---
+install_home_assistant_supervised_ansible_requirements: true
 prefix: /usr
 sysconfdir: /etc
 data_share: "{{ prefix }}/share/hassio"
 config: "{{ sysconfdir }}/hassio.json"
-machine: raspberrypi4
+machine: raspberrypi4-64
 docker_repo: homeassistant
-hassio_docker: "{{ docker_repo }}/armv7-hassio-supervisor"
 binary_docker: /usr/bin/docker
 service_docker: "docker.service"
+docker_apt_arch: arm64

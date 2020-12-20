@@ -1,11 +1,14 @@
 ---
+- name: Install role requirements
+  import_tasks: requirements.yml
+  when: install_home_assistant_supervised_ansible_requirements|bool
+
 - name: Install OS package prereqs
   apt:
     name:
       - systemd
       - network-manager
       - apparmor
-      - docker
       - jq
       - curl
       - dbus
@@ -17,6 +20,11 @@
     name: ModemManager
     enabled: no
     state: stopped
+
+- name: Create Docker config directory
+  file:
+    path: /etc/docker
+    state: directory
 
 - name: Set up docker config file
   copy:
@@ -44,7 +52,7 @@
       target: /etc/NetworkManager/system-connections/default
   loop_control:
     loop_var: networkmanager_file
-    label: "{{ networkmanager_file['source']"
+    label: "{{ networkmanager_file['source'] }}"
   notify:
     - restart networkmanager
 
@@ -86,14 +94,14 @@
 
 - name: Install supervisor Docker container
   docker_image:
-    name: "{{ hassio_docker }}:{{ hassio_version }}"
+    name: "{{ arch[ansible_architecture]['hassio_docker'] }}:{{ hassio_version }}"
     source: pull
     state: present
 
 - name: Add tag latest to supervisor image
   docker_image:
-    name: "{{ hassio_docker }}:{{ hassio_version }}"
-    repository: "{{ hassio_docker }}:latest"
+    name: "{{ arch[ansible_architecture]['hassio_docker'] }}:{{ hassio_version }}"
+    repository: "{{ arch[ansible_architecture]['hassio_docker'] }}:latest"
     # As 'latest' usually already is present, we need to enable overwriting of existing tags
     force_tag: yes
     source: local
@@ -113,47 +121,48 @@
   service:
     name: hassio-supervisor
     enabled: yes
-    
+
 - name: Create AppArmor directory
   file:
-    path: "{{ data_share }}/apparmor"  
+    path: "{{ data_share }}/apparmor"
     state: directory
-  
+
 - name: Install AppArmor startup script
-  src: hassio-apparmor.service.j2
-  dest: "{{ prefix }}/sbin/hassio-apparmor"
-  mode: a+x
+  template:
+    src: hassio-apparmor.j2
+    dest: "{{ prefix }}/sbin/hassio-apparmor"
+    mode: a+x
 
 - name: Install AppArmor service file
   template:
     src: hassio-apparmor.service.j2
     dest: "{{ sysconfdir }}/systemd/system/hassio-apparmor.service"
-  
-- name: Download AppArmor profile 
+
+- name: Download AppArmor profile
   get_url:
     url: https://version.home-assistant.io/apparmor.txt
     dest: "{{ data_share }}/apparmor/hassio-supervisor"
 
-- name: Enable and start AppArmor service 
+- name: Enable and start AppArmor service
   service:
-    name: hassio-apparmor 
+    name: hassio-apparmor
     enabled: yes
-    start: started
+    state: started
 
 # AppArmor service must be started before Home Assistant service
 - name: Start Home Assistant Supervised
   service:
-    name: hassio-supervisor 
-    start: started
+    name: hassio-supervisor
+    state: started
 
-- name: Install the 'ha' cli 
+- name: Install the 'ha' cli
   copy:
-    src: ha 
-    dest: "{{ prefix }}/bin/ha" 
+    src: ha
+    dest: "{{ prefix }}/bin/ha"
     mode: a+x
 
 - name: Home Assistant supervised is now installed
   debug:
-    msg:  
+    msg:
       - "First setup will take some time, when it's ready you can reach it here:"
       - "http://{{ ansible_default_ipv4['address'] }}:8123"

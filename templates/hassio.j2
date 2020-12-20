@@ -1,5 +1,5 @@
 {
-    "supervisor": "{{ hassio_docker }}",
+    "supervisor": "{{ arch[ansible_architecture]['hassio_docker'] }}",
     "machine": "{{ machine }}",
     "data": "{{ data_share }}"
 }
