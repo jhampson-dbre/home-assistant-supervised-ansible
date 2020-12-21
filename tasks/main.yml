@@ -3,7 +3,7 @@
   import_tasks: requirements.yml
   when: install_home_assistant_supervised_ansible_requirements|bool
 
-- name: Install OS package prereqs
+- name: Install OS package prereqs # noqa 403
   apt:
     name:
       - systemd
@@ -25,11 +25,13 @@
   file:
     path: /etc/docker
     state: directory
+    mode: '0755'
 
 - name: Set up docker config file
   copy:
     src: docker_daemon.json
     dest: /etc/docker/daemon.json
+    mode: '0644'
   notify:
     - restart docker
 
@@ -45,6 +47,7 @@
   copy:
     src: "{{ networkmanager_file['source'] }}"
     dest: "{{ networkmanager_file['target'] }}"
+    mode: '0644'
   loop:
     - source: NetworkManager.conf
       target: /etc/NetworkManager/NetworkManager.conf
@@ -60,6 +63,7 @@
   copy:
     src: interfaces
     dest: /etc/network/interfaces
+    mode: '0644'
   notify:
     - restart networkmanager
 
@@ -67,6 +71,7 @@
   file:
     path: "{{ data_share }}"
     state: directory
+    mode: '0755'
 
 - name: Write config
   template:
@@ -81,6 +86,7 @@
   template:
     src: hassio.j2
     dest: "{{ config }}"
+    mode: '0644'
 
 - name: Read version infos from web
   uri:
@@ -116,6 +122,7 @@
   template:
     src: hassio-supervisor.service.j2
     dest: "{{ sysconfdir }}/systemd/system/hassio-supervisor.service"
+    mode: '0644'
 
 - name: Enable supervisor service
   service:
@@ -126,6 +133,7 @@
   file:
     path: "{{ data_share }}/apparmor"
     state: directory
+    mode: '0755'
 
 - name: Install AppArmor startup script
   template:
@@ -137,11 +145,13 @@
   template:
     src: hassio-apparmor.service.j2
     dest: "{{ sysconfdir }}/systemd/system/hassio-apparmor.service"
+    mode: '0644'
 
 - name: Download AppArmor profile
   get_url:
     url: https://version.home-assistant.io/apparmor.txt
     dest: "{{ data_share }}/apparmor/hassio-supervisor"
+    mode: '0644'
 
 - name: Enable and start AppArmor service
   service:

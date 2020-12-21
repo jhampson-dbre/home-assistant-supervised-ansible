@@ -2,6 +2,6 @@
 - name: Install pip requirements for home-assistant-supervised-ansible
   pip:
     name:
-      - docker 
+      - docker
     executable: pip3
     extra_args: --user

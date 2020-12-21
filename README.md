@@ -1,7 +1,7 @@
-home-assistant-supervised-ansible
+home_assistant_supervised
 =========
 
-Install Home Assistant Supervised on Raspberry Pi 4 running Raspbian.
+Install Home Assistant Supervised on Raspberry Pi 4 running Debian 10 (buster).
 
 Requirements
 ------------

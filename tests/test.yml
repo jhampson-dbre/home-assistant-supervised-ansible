@@ -5,5 +5,5 @@
   roles:
     - role: home-assistant-supervised-ansible
       vars:
-        machine: qemux86-64 
+        machine: qemux86-64
         docker_apt_arch: amd64
