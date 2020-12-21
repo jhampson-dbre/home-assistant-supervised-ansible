@@ -11,21 +11,75 @@ python3-apt
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Variables in `defaults/main.yml` with default values show
+
+The variables below are specify to the home_assistant_supervised role
+
+```yaml
+# Install the requirements for the role listed above.
+# The role will error if the requirements are installed,
+# but potentially this could make you Home Assistant Supervised
+# "unsupported" since it is not required by
+# Home Assistant. To maintain "full support", these requirements
+# can be manually uninstalled if you are done using this role
+install_home_assistant_supervised_ansible_requirements: true
+```
+
+The variables below correspond to the variables from install.sh with the same values
+
+```yaml
+prefix: /usr
+sysconfdir: /etc
+data_share: "{{ prefix }}/share/hassio"
+config: "{{ sysconfdir }}/hassio.json"
+docker_repo: homeassistant
+binary_docker: /usr/bin/docker
+service_docker: "docker.service"
+```
+
+The variables below can be provided by the user in install.sh
+
+```yaml
+# Allowed values in install.sh are
+# intel-nuc|odroid-c2|odroid-n2|odroid-xu|qemuarm|qemuarm-64|qemux86|qemux86-64|raspberrypi|raspberrypi2|raspberrypi3|raspberrypi4|raspberrypi3-64|raspberrypi4-64|tinker
+machine: raspberrypi4-64
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+1. geerlingguy.docker - Used to install Docker CE
+
+The variables below are used by the [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) role. The default is for Raspberry Pi 4 running Debian 64-bit. For other use cases and options, please refer to the geerlingguy.docker README
+
+```yaml
+# defaults/main.yml
+docker_apt_arch: arm64
+```
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+# Run the playbook from remote host to Rapsberry Pi 4 running Debian 10 64-bit
+- hosts: pi
+  become: yes
+  force_handlers: true
+  roles:
+    - role: home-assistant-supervised-ansible
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+# Run the playbook locally in a Debian 10 VM with Ansible installed, running in Hyper-V on Windows
+- hosts: localhost
+  become: yes
+  force_handlers: true
+  roles:
+    - role: home-assistant-supervised-ansible
+      vars:
+        machine: qemux86-64
+        docker_apt_arch: amd64
+```
 
 License
 -------
