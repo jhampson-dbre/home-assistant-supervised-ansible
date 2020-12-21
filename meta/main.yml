@@ -26,9 +26,10 @@ galaxy_info:
         - buster
 
   galaxy_tags:
-    - raspberrypi
-    - raspbian
+    - smart
+    - assistant
     - hassio
+    - raspberry
 
 dependencies:
   - geerlingguy.docker
