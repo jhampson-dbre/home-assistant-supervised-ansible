@@ -11,7 +11,11 @@ python3-apt
 Role Variables
 --------------
 
-Variables in `defaults/main.yml` with default values show
+Variables used from fact gathering
+
+- ansible_pkg_mgr: Used to validate that apt is available, since it is used by this role to install OS packages
+
+Variables in `defaults/main.yml` with default values shown
 
 The variables below are specify to the home_assistant_supervised role
 
