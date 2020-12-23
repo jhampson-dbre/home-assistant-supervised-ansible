@@ -70,7 +70,7 @@ Example Playbook
   become: yes
   force_handlers: true
   roles:
-    - role: home-assistant-supervised-ansible
+    - role: jhampson_dbre.home_assistant_supervised
 ```
 
 ```yaml
@@ -79,7 +79,7 @@ Example Playbook
   become: yes
   force_handlers: true
   roles:
-    - role: home-assistant-supervised-ansible
+    - role: jhampson_dbre.home_assistant_supervised
       vars:
         machine: qemux86-64
         docker_apt_arch: amd64
