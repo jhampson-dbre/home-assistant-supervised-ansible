@@ -1,4 +1,10 @@
 ---
+- name: Ensure we are running on OS with apt package manager
+  assert:
+    that:
+      - ansible_pkg_mgr == "apt"
+    fail_msg: "Expected 'apt' package manager, but got {{ ansible_pkg_mgr }}. Only Debian-based distros are supported"
+
 - name: Install role requirements
   import_tasks: requirements.yml
   when: install_home_assistant_supervised_ansible_requirements|bool
