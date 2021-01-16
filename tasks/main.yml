@@ -73,20 +73,14 @@
   notify:
     - restart networkmanager
 
+- name: Ensure all changed service are restarted
+  meta: flush_handlers
+
 - name: Init folders
   file:
     path: "{{ data_share }}"
     state: directory
     mode: '0755'
-
-- name: Write config
-  template:
-    src: hassio.j2
-    dest: "{{ config }}"
-    mode: '0644'
-
-- name: Ensure all changed service are restarted
-  meta: flush_handlers
 
 - name: Write config
   template:
