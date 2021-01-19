@@ -8,4 +8,3 @@ machine: raspberrypi4-64
 docker_repo: homeassistant
 binary_docker: /usr/bin/docker
 service_docker: "docker.service"
-docker_apt_arch: arm64

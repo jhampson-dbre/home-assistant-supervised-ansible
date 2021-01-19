@@ -14,3 +14,6 @@ arch:
     hassio_docker: "{{ docker_repo }}/armv7-hassio-supervisor"
   "aarch64":
     hassio_docker: "{{ docker_repo }}/aarch64-hassio-supervisor"
+
+# for geerlingguy.docker
+docker_apt_arch: arm64

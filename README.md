@@ -57,7 +57,7 @@ Dependencies
 The variables below are used by the [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) role. The default is for Raspberry Pi 4 running Debian 64-bit. For other use cases and options, please refer to the geerlingguy.docker README
 
 ```yaml
-# defaults/main.yml
+# vars/main.yml
 docker_apt_arch: arm64
 ```
 
