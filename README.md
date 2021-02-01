@@ -1,6 +1,8 @@
 home_assistant_supervised
 =========
 
+**NOTICE:** This role has been migrated to the [jhampson_dbre.home_assistant](https://galaxy.ansible.com/jhampson_dbre/home_assistant) collection as 'supervised_install'. All future bug fixes and enhancements will for this role will be made in its new home.
+
 Install Home Assistant Supervised on Raspberry Pi 4 running Debian 10 (buster).
 
 Requirements
